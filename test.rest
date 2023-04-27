@@ -1,0 +1,11 @@
+
+POST  http://localhost:8000/api/user/update
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDQ5NDc3MDc3ZTg4ZmQ1N2RmY2U2YmEiLCJpYXQiOjE2ODI2MTIyMzR9.1bJXoa3ehMUHdg0gVFKKqR2nFaDPJv-7eQdq0PzUJ3U
+Content-type: application/json
+
+{
+    "Name":"prasa",
+    "phoneNumber": "1234567890",
+    "password": "1234",
+    "orgId":"4"
+}
