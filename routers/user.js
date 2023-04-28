@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
 require('dotenv').config();
-const Signup= require('../models/userSchema.js');
-const jwt = require('jsonwebtoken');
-const organisation= require('../models/organisation.js');
 const mongoose=require('mongoose');
-//const JWT_SECRET = 'secret';
+const jwt = require('jsonwebtoken');
 
-router.post('/User/signUp',async function(req,res){
+
+const organisation= require('../models/organisation.js');
+const Signup= require('../models/userSchema.js');
+
+
+router.post('/signUp',async function(req,res){
     const newlogin = new Signup({
         Name: req.body.Name,
         phoneNumber: req.body.phoneNumber,
@@ -41,7 +43,7 @@ router.post('/User/signUp',async function(req,res){
 
 router.get('/', (req,res) => res.send("Router page"));
 
-router.post('/user/login',async function(req,res){
+router.post('/login',async function(req,res){
     const login= new Signup({
         phoneNumber: req.body.phoneNumber,
         password: req.body.password,
@@ -87,7 +89,7 @@ const authenticateToken = (req, res, next) => {
     });
   };
 
-router.post('/user/update',authenticateToken,async function(req,res){
+router.post('/update',authenticateToken,async function(req,res){
   console.log('Outside middleware (client)' + req.userId);
     const newupdate = new Signup({
         Name: req.body.Name,
@@ -101,6 +103,8 @@ router.post('/user/update',authenticateToken,async function(req,res){
     //res.json({name:newupdate.Name ,phoneNumber:newupdate.phoneNumber,orgId:newupdate.orgId,orgIp:org.orgIp});
     if(org!=null){
       await Signup.findByIdAndUpdate(req.userId, {Name:newupdate.Name,phoneNumber: newupdate.phoneNumber,password:newupdate.password,orgId:newupdate.orgId});
+      const org1= await Signup.findOne({phoneNumber:newupdate.phoneNumber});
+      if(org1!=null){
     const responseData = {
         Name: newupdate.Name,
         phoneNumber: newupdate.phoneNumber,
@@ -109,6 +113,10 @@ router.post('/user/update',authenticateToken,async function(req,res){
         token: jwt.sign({ userId: newupdate._id }, process.env.JWT_SECRET),
       };
       res.json(responseData);
+    }
+    else{
+      res.json('Phone is already exists');
+    }
     }
     else{
       res.json('Invalid orgId');
