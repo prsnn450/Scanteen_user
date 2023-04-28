@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
     res.send('Hello');
   });
 
-app.use('/api',user);
+app.use('/api/v1/User',user);
 
 app.listen(8000,function(req,res){
     console.log('connected to port:8000');
