@@ -16,13 +16,20 @@ router.post('/signUp',async function(req,res){
         password: req.body.password,
         orgId: new mongoose.Types.ObjectId(req.body.orgId)
     });
+    console.log(newlogin.orgId);
     const existlogin= await Signup.findOne({phoneNumber: newlogin.phoneNumber});
     if(existlogin){
-        res.json('Already user exists');
+        res.status(403).json('Already user exists');
     }
     else{
         
         const org= await organisation.findOne({_id: newlogin.orgId});
+
+        console.log(org._id);
+        console.log(newlogin.orgId);
+        console.log(org._id == newlogin.orgId)
+        console.log(org._id === newlogin.orgId)
+
         if(org!=null){
           await newlogin.save();   
         const responseData = {
@@ -32,16 +39,14 @@ router.post('/signUp',async function(req,res){
             orgIp: org.orgIp,
             token: jwt.sign({ userId: newlogin._id }, process.env.JWT_SECRET),
           };
-          res.json(responseData);
+          res.status(200).json(responseData);
         }
         else{
-          res.json('Invalid orgId');
+          res.status(401).json('Invalid orgId');
         }
     }
 
 });
-
-router.get('/', (req,res) => res.send("Router page"));
 
 router.post('/login',async function(req,res){
     const login= new Signup({
@@ -62,14 +67,14 @@ router.post('/login',async function(req,res){
             orgIp: org.orgIp,
             token: jwt.sign({ userId: exist._id }, process.env.JWT_SECRET),
           };
-          res.json(responseData);
+          res.status(200).json(responseData);
         }
         else{
-            res.json('password mismatch');
+            res.status(403).json('password mismatch');
         }
     } 
     else{
-        res.json('phone number is not exist')
+        res.status(500).json('phone number is not exist')
     }
 });
 
@@ -112,14 +117,14 @@ router.post('/update',authenticateToken,async function(req,res){
         orgIp: org.orgIp,
         token: jwt.sign({ userId: newupdate._id }, process.env.JWT_SECRET),
       };
-      res.json(responseData);
+      res.status(200).json(responseData);
     }
     else{
-      res.json('Phone is already exists');
+      res.status(500).json('Phone is already exists');
     }
     }
     else{
-      res.json('Invalid orgId');
+      res.status(403).json('Invalid orgId');
     }
 });
 
