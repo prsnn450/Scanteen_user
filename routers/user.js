@@ -24,12 +24,6 @@ router.post('/signUp',async function(req,res){
     else{
         
         const org= await organisation.findOne({_id: newlogin.orgId});
-
-        console.log(org._id);
-        console.log(newlogin.orgId);
-        console.log(org._id == newlogin.orgId)
-        console.log(org._id === newlogin.orgId)
-
         if(org!=null){
           await newlogin.save();   
         const responseData = {
@@ -126,6 +120,7 @@ router.post('/update',authenticateToken,async function(req,res){
     else{
       res.status(403).json('Invalid orgId');
     }
+
 });
 
 module.exports = router;
