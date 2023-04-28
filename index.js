@@ -20,6 +20,6 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/User',user);
 
-app.listen(8000,function(req,res){
-    console.log('connected to port:8000');
+app.listen(5000,function(req,res){
+    console.log('connected to port:5000');
 });
