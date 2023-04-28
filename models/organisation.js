@@ -1,10 +1,7 @@
 const mongoose= require('mongoose');
 
 const organisationschema = mongoose.Schema({
-    orgId:{
-        type: String,
-        required: true
-    },
+
     orgName:{
         type: String,
         required: true,
