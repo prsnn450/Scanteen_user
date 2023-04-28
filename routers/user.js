@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 require('dotenv').config();
-const Signup= require('../models/signup.js');
+const Signup= require('../models/userSchema.js');
 const jwt = require('jsonwebtoken');
 const organisation= require('../models/organisation.js');
 const mongoose=require('mongoose');
@@ -19,11 +19,10 @@ router.post('/User/signUp',async function(req,res){
         res.json('Already user exists');
     }
     else{
-        await newlogin.save();
+        
         const org= await organisation.findOne({_id: newlogin.orgId});
-        //res.json({Name:newlogin.name ,phoneNumber:newlogin.phoneNumber,orgId:newlogin.orgId,orgIp:org.orgIp});
-        //const token= jwt.sign({userId: newlogin._id}, JWT_SECRET);
-        //res.json({token});
+        if(org!=null){
+          await newlogin.save();   
         const responseData = {
             Name: newlogin.Name,
             phoneNumber: newlogin.phoneNumber,
@@ -32,6 +31,10 @@ router.post('/User/signUp',async function(req,res){
             token: jwt.sign({ userId: newlogin._id }, process.env.JWT_SECRET),
           };
           res.json(responseData);
+        }
+        else{
+          res.json('Invalid orgId');
+        }
     }
 
 });
@@ -93,9 +96,11 @@ router.post('/user/update',authenticateToken,async function(req,res){
         orgId: new mongoose.Types.ObjectId(req.body.orgId)
     });
     const org= await organisation.findOne({_id: newupdate.orgId});
-    await Signup.findByIdAndUpdate(req.userId, {Name:newupdate.Name,phoneNumber: newupdate.phoneNumber,password:newupdate.password,orgId:newupdate.orgId});
+    
     //res.json({token});
     //res.json({name:newupdate.Name ,phoneNumber:newupdate.phoneNumber,orgId:newupdate.orgId,orgIp:org.orgIp});
+    if(org!=null){
+      await Signup.findByIdAndUpdate(req.userId, {Name:newupdate.Name,phoneNumber: newupdate.phoneNumber,password:newupdate.password,orgId:newupdate.orgId});
     const responseData = {
         Name: newupdate.Name,
         phoneNumber: newupdate.phoneNumber,
@@ -104,6 +109,10 @@ router.post('/user/update',authenticateToken,async function(req,res){
         token: jwt.sign({ userId: newupdate._id }, process.env.JWT_SECRET),
       };
       res.json(responseData);
+    }
+    else{
+      res.json('Invalid orgId');
+    }
 });
 
 module.exports = router;
